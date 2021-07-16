@@ -10,14 +10,16 @@ function draw() {
   // translate allows us to move the canvas around
   context.translate(camX, camY);
 
-  // draw  player
-  context.beginPath();
-  context.fillStyle = 'rgb(255, 30, 0)';
-  context.arc(200, 200, 10, 0, Math.PI * 2);
-  context.fill();
-  context.lineWidth = 3;
-  context.strokeStyle = 'rgb(0,255,0)';
-  context.stroke();
+  // draw all the players
+  players.forEach((p) => {
+    context.beginPath();
+    context.fillStyle = p.color;
+    context.arc(p.locX, p.locY, p.radius, 0, Math.PI * 2);
+    context.fill();
+    context.lineWidth = 3;
+    context.strokeStyle = 'rgb(0,255,0)';
+    context.stroke();
+  });
 
   // draw all the orbs
   orbs.forEach((orb) => {

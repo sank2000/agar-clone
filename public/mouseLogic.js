@@ -1,5 +1,4 @@
 canvas.addEventListener('mousemove', (event) => {
-  console.log(event);
   const mousePosition = {
     x: event.clientX,
     y: event.clientY,
@@ -12,32 +11,23 @@ canvas.addEventListener('mousemove', (event) => {
       180) /
     Math.PI;
   if (angleDeg >= 0 && angleDeg < 90) {
+    // console.log("Mouse is in the lower right quad")
     xVector = 1 - angleDeg / 90;
     yVector = -(angleDeg / 90);
   } else if (angleDeg >= 90 && angleDeg <= 180) {
+    // console.log("Mouse is in the lower left quad")
     xVector = -(angleDeg - 90) / 90;
     yVector = -(1 - (angleDeg - 90) / 90);
   } else if (angleDeg >= -180 && angleDeg < -90) {
+    // console.log("Mouse is in the upper left quad")
     xVector = (angleDeg + 90) / 90;
     yVector = 1 + (angleDeg + 90) / 90;
   } else if (angleDeg < 0 && angleDeg >= -90) {
+    // console.log("Mouse is in the upper right quad")
     xVector = (angleDeg + 90) / 90;
     yVector = 1 - (angleDeg + 90) / 90;
   }
 
-  speed = 10;
-  xV = xVector;
-  yV = yVector;
-
-  if (
-    (player.locX < 5 && player.xVector < 0) ||
-    (player.locX > 500 && xV > 0)
-  ) {
-    player.locY -= speed * yV;
-  } else if ((player.locY < 5 && yV > 0) || (player.locY > 500 && yV < 0)) {
-    player.locX += speed * xV;
-  } else {
-    player.locX += speed * xV;
-    player.locY -= speed * yV;
-  }
+  player.xVector = xVector;
+  player.yVector = yVector;
 });
