@@ -20,17 +20,18 @@ let settings = {
 initGame();
 
 io.sockets.on('connect', (socket) => {
-  let playerConfig = new PlayerConfig(settings);
-  // make a playerData object
-  let playerData = new PlayerData(data.playerName, settings);
-  // make a master player object to hold both
-  player = new Player(socket.id, playerConfig, playerData);
+  let player = {};
+  socket.on('init', (data) => {
+    let playerConfig = new PlayerConfig(settings);
+    let playerData = new PlayerData(data.playerName, settings);
+    player = new Player(socket.id, playerConfig, playerData);
 
-  // a player has connected
-  socket.emit('initReturn', {
-    orbs,
+    // a player has connected
+    socket.emit('initReturn', {
+      orbs,
+    });
+    players.push(playerData);
   });
-  players.push(playerData);
 });
 
 // Run at the beginning of a new game
