@@ -5,6 +5,11 @@ const Player = require('./classes/Player');
 const PlayerData = require('./classes/PlayerData');
 const PlayerConfig = require('./classes/PlayerConfig');
 
+const checkForOrbCollisions =
+  require('./checkCollisions').checkForOrbCollisions;
+const checkForPlayerCollisions =
+  require('./checkCollisions').checkForPlayerCollisions;
+
 let orbs = [];
 let players = [];
 let settings = {
@@ -70,6 +75,42 @@ io.sockets.on('connect', (socket) => {
       player.playerData.locX += speed * xV;
       player.playerData.locY -= speed * yV;
     }
+
+    // ORB COLLISION!!
+    let capturedOrb = checkForOrbCollisions(
+      player.playerData,
+      player.playerConfig,
+      orbs,
+      settings
+    );
+
+    capturedOrb
+      .then((data) => {
+        const orbData = {
+          orbIndex: data,
+          newOrb: orbs[data],
+        };
+
+        io.sockets.emit('orbSwitch', orbData);
+      })
+      .catch(() => {
+        // catch runs if the reject runs! no collision
+      });
+
+    // PLAYER COLLISION!!
+    let playerDeath = checkForPlayerCollisions(
+      player.playerData,
+      player.playerConfig,
+      players,
+      player.socketId
+    );
+    playerDeath
+      .then((data) => {
+        console.log('Player collision!!!');
+      })
+      .catch(() => {
+        // console.log("No player collision")
+      });
   });
 });
 
