@@ -109,10 +109,23 @@ io.sockets.on('connect', (socket) => {
     playerDeath
       .then((data) => {
         io.sockets.emit('updateLeaderBoard', getLeaderBoard());
+
+        io.sockets.emit('playerDeath', data);
       })
       .catch(() => {
         // console.log("No player collision")
       });
+  });
+
+  socket.on('disconnect', (data) => {
+    if (player.playerData) {
+      players.forEach((currPlayer, i) => {
+        if (currPlayer.uid == player.playerData.uid) {
+          players.splice(i, 1);
+          io.sockets.emit('updateLeaderBoard', getLeaderBoard());
+        }
+      });
+    }
   });
 });
 
