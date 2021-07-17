@@ -92,6 +92,8 @@ io.sockets.on('connect', (socket) => {
         };
 
         io.sockets.emit('orbSwitch', orbData);
+
+        io.sockets.emit('updateLeaderBoard', getLeaderBoard());
       })
       .catch(() => {
         // catch runs if the reject runs! no collision
@@ -106,13 +108,26 @@ io.sockets.on('connect', (socket) => {
     );
     playerDeath
       .then((data) => {
-        console.log('Player collision!!!');
+        io.sockets.emit('updateLeaderBoard', getLeaderBoard());
       })
       .catch(() => {
         // console.log("No player collision")
       });
   });
 });
+
+function getLeaderBoard() {
+  players.sort((a, b) => {
+    return b.score - a.score;
+  });
+  let leaderBoard = players.map((curPlayer) => {
+    return {
+      name: curPlayer.name,
+      score: curPlayer.score,
+    };
+  });
+  return leaderBoard;
+}
 
 // Run at the beginning of a new game
 function initGame() {
