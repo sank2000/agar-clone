@@ -13,13 +13,13 @@ const checkForPlayerCollisions =
 let orbs = [];
 let players = [];
 let settings = {
-  defaultOrbs: 50,
+  defaultOrbs: 500,
   defaultSpeed: 6,
   defaultSize: 6,
   // as player gets bigger, the zoom needs to go out
   defaultZoom: 1.5,
-  worldWidth: 500,
-  worldHeight: 500,
+  worldWidth: 5000,
+  worldHeight: 5000,
 };
 
 initGame();
@@ -45,6 +45,7 @@ io.sockets.on('connect', (socket) => {
       socket.emit('tickTock', {
         playerX: player.playerData.locX,
         playerY: player.playerData.locY,
+        score: player.playerData.score,
       });
     }, 33);
 
@@ -52,11 +53,16 @@ io.sockets.on('connect', (socket) => {
     socket.emit('initReturn', {
       orbs,
     });
+
     players.push(playerData);
+
+    socket.emit('updateLeaderBoard', getLeaderBoard());
   });
 
   socket.on('tick', (data) => {
     speed = 10;
+
+    if (!player.playerConfig) return;
 
     xV = player.playerConfig.xVector = data?.xVector ?? 0;
     yV = player.playerConfig.yVector = data?.yVector ?? 0;
